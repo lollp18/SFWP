@@ -253,9 +253,9 @@ export default {
 </script>
 
 <template>
-  <div :class="WochenTage ? '' : 'hidden'">
+  <div :class="WochenTage ? 'ListeTage' : 'hidden'">
     <div
-      class="ListeTage"
+      class="Tage"
       v-for="Tag in WochenDays"
       @click="GetDay(Tag)">
       {{ Tag }}
@@ -395,20 +395,27 @@ body {
   height: 100%;
   width: 100%;
 }
-
 .ListeTage {
   width: 100%;
-  font-size: 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.Tage {
+  width: 100%;
+  height: 25%;
+  font-size: 25px;
   border-bottom: 2px solid black;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 10rem;
 }
 nav {
   display: flex;
   padding: 1rem;
-
+align-items: center;
   font-size: 35px;
   width: 100%;
   background-color: #ffffff;
@@ -452,12 +459,12 @@ nav {
 }
 .ItemText {
   width: 80%;
- text-align: left;
+  text-align: left;
 }
 .ItemBTNS {
   display: flex;
   flex-direction: column;
-  gap: .3rem;
+  gap: 0.3rem;
   margin-left: auto;
 }
 .hidden {
@@ -488,11 +495,11 @@ button {
   width: 100%;
 }
 .BearbeitenInput {
-  margin-top: 21%;
+  
   padding: 0.5rem;
   font-size: 25px;
   height: 3rem;
-  margin: 0 auto;
+  margin: 50%  auto 0 auto ;
 }
 
 .Ckeckt {
