@@ -364,8 +364,9 @@ button {
 }
 .BearbeitenInput {
   padding: 0.5rem;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   height: 3rem;
+  width: 100%;
   margin: 50% auto 0 auto;
 }
 
