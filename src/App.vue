@@ -284,7 +284,7 @@ nav {
   display: flex;
   padding: 1rem;
   align-items: center;
-  font-size: 35px;
+  font-size: 2rem;
   width: 100%;
   background-color: #ffffff;
 }
