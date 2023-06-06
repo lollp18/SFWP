@@ -273,7 +273,7 @@ body {
 }
 .Tage {
   width: 100%;
-  height: 25%;
+  height: 16.666%;
   font-size: 1.8rem;
   border-bottom: 2px solid black;
   display: flex;
