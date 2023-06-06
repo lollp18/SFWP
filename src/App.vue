@@ -274,7 +274,7 @@ body {
 .Tage {
   width: 100%;
   height: 25%;
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   border-bottom: 2px solid black;
   display: flex;
   justify-content: center;
@@ -316,7 +316,7 @@ nav {
 }
 
 .Termine {
-  font-size: 20px;
+  font-size: 1.5rem;
   border: 2px solid black;
   border-radius: 9px;
   display: flex;
@@ -364,7 +364,7 @@ button {
 }
 .BearbeitenInput {
   padding: 0.5rem;
-  font-size: 25px;
+  font-size: 2.5rem;
   height: 3rem;
   margin: 50% auto 0 auto;
 }
@@ -377,6 +377,6 @@ button {
 }
 
 ion-icon {
-  font-size: 50px;
+  font-size: 5rem;
 }
 </style>
