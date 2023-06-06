@@ -29,139 +29,7 @@ export default {
       ],
 
       Tage: new Map([
-        [
-          "Montag",
-          [
-            {
-              eintag: "1",
-              activ: false,
-            },
-            {
-              eintag: "2",
-              activ: false,
-            },
-            {
-              eintag: "3",
-              activ: false,
-            },
-            {
-              eintag: "4",
-              activ: false,
-            },
-            {
-              eintag: "5",
-              activ: false,
-            },
-            {
-              eintag: "6",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-            {
-              eintag: "",
-              activ: false,
-            },
-          ],
-        ],
+        ["Montag", []],
         ["Dinstag", []],
         ["Mitwoch", []],
         ["Donerstag", []],
@@ -415,7 +283,7 @@ body {
 nav {
   display: flex;
   padding: 1rem;
-align-items: center;
+  align-items: center;
   font-size: 35px;
   width: 100%;
   background-color: #ffffff;
@@ -495,11 +363,10 @@ button {
   width: 100%;
 }
 .BearbeitenInput {
-  
   padding: 0.5rem;
   font-size: 25px;
   height: 3rem;
-  margin: 50%  auto 0 auto ;
+  margin: 50% auto 0 auto;
 }
 
 .Ckeckt {
