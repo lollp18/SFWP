@@ -122,12 +122,12 @@ export default {
 
 <template>
   <div :class="WochenTage ? 'ListeTage' : 'hidden'">
-    <div
+    <p
       class="Tage"
       v-for="Tag in WochenDays"
       @click="GetDay(Tag)">
       {{ Tag }}
-    </div>
+    </p>
   </div>
 
   <div :class="Terminliste ? 'ListeTermineRapper' : 'hidden'">
