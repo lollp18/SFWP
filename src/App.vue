@@ -314,7 +314,7 @@ aside {
   border-right: solid black 1.5px;
   border-top: solid black 1.5px;
   color: #000;
-  height: 90%;
+  height: 88%;
   width: 25%;
   position: fixed;
   border-top-right-radius: 11px;
