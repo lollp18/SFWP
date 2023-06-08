@@ -21,7 +21,7 @@ export default {
     return {
       WochenDays: [
         "Montag",
-        "Dienstag",
+        "Dinstag",
         "Mittwoch",
         "Donnerstag",
         "Freitag",
@@ -31,8 +31,8 @@ export default {
       Tage: new Map([
         ["Montag", []],
         ["Dinstag", []],
-        ["Mitwoch", []],
-        ["Donerstag", []],
+        ["Mittwoch", []],
+        ["Donnerstag", []],
         ["Freitag", []],
         ["Samstag", []],
       ]),
@@ -43,6 +43,7 @@ export default {
       WochenTage: true,
       Terminliste: false,
       TerminBearbeiten: false,
+      aside: false,
     }
   },
 
@@ -60,7 +61,7 @@ export default {
     GetDay(Tag) {
       this.WochenTage = false
       this.Terminliste = true
-
+      this.aside = false
       this.CurrentTag = {
         Day: Tag,
         Termine: this.Tage.get(Tag),
@@ -116,11 +117,27 @@ export default {
         this.SaveWoche()
       }
     },
+
+    AsideNav() {
+      if (this.aside == true) {
+        this.aside = false
+      } else {
+        this.aside = true
+      }
+    },
   },
 }
 </script>
 
 <template>
+  <aside :class="aside ? '' : 'hidden'">
+    <div
+      class="asideItem"
+      v-for="Ta in WochenDays"
+      @click="GetDay(Ta)">
+      <p class="Day">{{ Ta[0] + Ta[1] }}</p>
+    </div>
+  </aside>
   <div :class="WochenTage ? 'ListeTage' : 'hidden'">
     <p
       class="Tage"
@@ -132,7 +149,7 @@ export default {
 
   <div :class="Terminliste ? 'ListeTermineRapper' : 'hidden'">
     <nav class="ListeTermineNav">
-      <button @click="NavigatWoche">
+      <button @click="AsideNav">
         <ion-icon name="list-outline"></ion-icon>
       </button>
       <p class="Day">{{ CurrentTag.Day }}</p>
@@ -262,6 +279,7 @@ body {
 #app {
   height: 100%;
   width: 100%;
+  position: relative;
 }
 .ListeTage {
   width: 100%;
@@ -288,6 +306,30 @@ nav {
   width: 100%;
   background-color: #ffffff;
 }
+aside {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #fff;
+  border-right: solid black 1.5px;
+  border-top: solid black 1.5px;
+  color: #000;
+  height: 90%;
+  width: 25%;
+  position: fixed;
+  border-top-right-radius: 11px;
+  z-index: 2;
+}
+
+.asideItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 16.666%;
+  font-size: 1.5rem;
+  border-bottom: solid black 1.5px;
+}
 
 .Day {
   margin: 0 auto;
@@ -302,6 +344,7 @@ nav {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 0;
 }
 .ListeTermine {
   display: flex;
