@@ -470,16 +470,16 @@ aside {
   align-items: center;
   width: 100%;
   margin-top: 0.5rem;
-  gap: 11rem;
+  gap: 8rem;
 }
 .Btn-Sort {
   border-radius: 11px;
   display: flex;
   align-items: center;
 
-  width: 5rem;
+  width: 5.3rem;
 
-  gap: 4px;
+
 }
 
 .Btn-Sort2 {
