@@ -1,5 +1,9 @@
 <script>
+import draggable from "vuedraggable"
 export default {
+  components: {
+    draggable,
+  },
   beforeMount() {
     if (localStorage.length > 0) {
       this.GetWoche()
@@ -37,14 +41,35 @@ export default {
         ["Samstag", []],
       ]),
       currentTermin: undefined,
-      CurrentTag: { Day: "Sonntag", Termine: ["f", "f", "f", "f"] },
+      CurrentTag: {
+        Day: "Sonntag",
+        Termine: Array(
+          {
+            eintag: "",
+            activ: false,
+          },
+          {
+            eintag: "",
+            activ: false,
+          },
+          {
+            eintag: "",
+            activ: false,
+          },
+          {
+            eintag: "",
+            activ: false,
+          }
+        ),
+      },
 
       TerminBearbeitenValue: undefined,
       WochenTage: true,
       Terminliste: false,
       TerminBearbeiten: false,
       aside: false,
-      Sort: false,
+      TagSotiren: false,
+      TerminOptionen: false,
     }
   },
 
@@ -70,12 +95,14 @@ export default {
     },
     SavDay() {
       this.Tage.set(this.CurrentTag.Day, this.CurrentTag.Termine)
+      console.log(this.CurrentTag.Day)
     },
     TerminBearbeitenAufrufen(i) {
       this.currentTermin = i
       this.WochenTage = false
       this.Terminliste = false
       this.TerminBearbeiten = true
+      this.TerminOptionen = false
 
       this.TerminBearbeitenValue = this.CurrentTag.Termine[i].eintag
     },
@@ -91,9 +118,24 @@ export default {
     },
     NavigatTermine() {
       this.WochenTage = false
+      this.TerminOptionen = false
       this.Terminliste = true
       this.TerminBearbeiten = false
+      this.TagSotiren = false
     },
+    NavigatTagSotiren() {
+      this.TerminOptionen = false
+      this.Terminliste = false
+      this.TagSotiren = true
+    },
+    NavigatTerminOptionen() {
+      if (this.TerminOptionen == true) {
+        this.TerminOptionen = false
+      } else {
+        this.TerminOptionen = true
+      }
+    },
+
     AddTermin() {
       this.CurrentTag.Termine.push({
         eintag: "",
@@ -102,10 +144,12 @@ export default {
       this.TerminBearbeitenAufrufen(this.CurrentTag.Termine.length - 1)
       this.SaveWoche()
     },
+
     getDimensions() {
       this.height = document.documentElement.clientHeight
     },
     TerminLöschhen(i) {
+      this.TerminOptionen = false
       this.CurrentTag.Termine.splice(i, 1)
       this.SaveWoche()
     },
@@ -126,14 +170,6 @@ export default {
         this.aside = true
       }
     },
-
-    SotirenGrünerHacken() {
-      this.Sort = true
-    },
-
-    SortOff() {
-      this.Sort = false
-    },
   },
 }
 </script>
@@ -147,6 +183,7 @@ export default {
       <p class="Day">{{ Ta[0] + Ta[1] }}</p>
     </div>
   </aside>
+
   <div :class="WochenTage ? 'ListeTage' : 'hidden'">
     <p
       class="Tage"
@@ -160,189 +197,75 @@ export default {
     <!-- TerminListe Nav -->
 
     <nav class="ListeTermineNav">
-      <div class="Nav-Main">
-        <button @click="AsideNav">
-          <ion-icon name="list-outline"></ion-icon>
-        </button>
-        <p class="Day">{{ CurrentTag.Day }}</p>
-        <button @click="AddTermin">
-          <ion-icon name="add-outline"></ion-icon>
-        </button>
-      </div>
-      <div class="Nav-Sort">
-        <button
-          class="Btn-Sort"
-          @click="SotirenGrünerHacken()">
-          Sotiren<svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="{1.5}"
-            stroke="currentColor"
-            class="Ckeckt">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4.5 12.75l6 6 9-13.5" />
-          </svg></button
-        ><button
-          class="Btn-Sort2"
-          @click="SortOff">
-          Alle Anzeigen
-        </button>
-      </div>
+      <button @click="AsideNav">
+        <ion-icon name="list-outline"></ion-icon>
+      </button>
+      <p
+        class="Day"
+        @click="NavigatTagSotiren">
+        {{ CurrentTag.Day }}
+      </p>
+      <button @click="AddTermin">
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
     </nav>
+
     <!-- Termin Liste -->
     <div :class="Terminliste ? 'ListeTermine' : 'hidden'">
       <div
-        style="width: 100%"
+        :class="Termin.activ ? 'TermineC' : 'Termine'"
         v-for="(Termin, i) in CurrentTag.Termine"
         :key="i">
-        <div
-          class="Termine"
-          v-if="Sort == true && Termin.activ == true">
-          <p class="ItemText">{{ Termin.eintag }}</p>
-          <div class="ItemBTNS">
-            <button
-              @click="TerminLöschhen(i)"
-              class="BTNlöschen">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="uncheck">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <button
-              class="BTNlöschen"
-              @click="TerminBearbeitenAufrufen(i)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="{1.5}"
-                stroke="currentColor"
-                className="w-6 h-6">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-              </svg>
-            </button>
-
-            <button
-              @click="check(i)"
-              class="BTNlöschen">
-              <svg
-                v-if="Termin.activ"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="{1.5}"
-                stroke="currentColor"
-                class="Ckeckt">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-              <svg
-                v-else
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="{1.5}"
-                stroke="currentColor"
-                class="uncheck">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div
-          v-else-if="Sort == false"
-          class="Termine">
-          <p class="ItemText">{{ Termin.eintag }}</p>
-          <div class="ItemBTNS">
-            <button
-              @click="TerminLöschhen(i)"
-              class="BTNlöschen">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="uncheck">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <button
-              class="BTNlöschen"
-              @click="TerminBearbeitenAufrufen(i)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="{1.5}"
-                stroke="currentColor"
-                className="w-6 h-6">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-              </svg>
-            </button>
-
-            <button
-              @click="check(i)"
-              class="BTNlöschen">
-              <svg
-                v-if="Termin.activ"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="{1.5}"
-                stroke="currentColor"
-                class="Ckeckt">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-              <svg
-                v-else
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="{1.5}"
-                stroke="currentColor"
-                class="uncheck">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <!-- TerminOptionen  -->
+        <aside :class="TerminOptionen ? 'TerminOptionen' : 'hidden'">
+          <button @click="TerminLöschhen(i)">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+          <button @click="TerminBearbeitenAufrufen(i)">
+            <ion-icon name="pencil"></ion-icon>
+          </button>
+        </aside>
+        <p
+          style="margin-right: auto"
+          @click="check(i)">
+          {{ Termin.eintag }}
+        </p>
+        <button @click="NavigatTerminOptionen">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+          </svg>
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Tag Sotiren -->
+  <div :class="TagSotiren ? 'ListeTagSotiren' : 'hidden'">
+    <nav class="NavTerminBearbeiten">
+      <button @click="NavigatTermine">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <p class="Day">Tag Sotiren</p>
+    </nav>
+    <draggable v-model="CurrentTag.Termine">
+      <template
+        v-for="(Termin, i) in CurrentTag.Termine"
+        :key="i"
+        #item="{ element: Termin }"
+        style="width: 100%">
+        <div class="Termine">
+          {{ Termin.eintag }}
+        </div>
+      </template>
+    </draggable>
   </div>
 
   <!-- Termin Bearbeiten -->
@@ -412,9 +335,9 @@ body {
   align-items: center;
 }
 nav {
-  padding: 1rem;
+  padding: 0.5rem;
 
-  font-size: 2rem;
+  font-size: 1rem;
   width: 100%;
   background-color: #ffffff;
   border-bottom: solid black 1.5px;
@@ -433,7 +356,20 @@ aside {
   border-top-right-radius: 11px;
   z-index: 2;
 }
-
+.TerminOptionen {
+  height: 15%;
+  width: 11%;
+  justify-content: center;
+  border-top-right-radius: 0;
+  border-bottom: solid black 1.5px;
+  border-right: 0;
+  border-left: solid black 1.5px;
+  border-top-left-radius: 11px;
+  border-bottom-left-radius: 11px;
+  padding: 0.5rem;
+  top: 25%;
+  left: 89%;
+}
 .asideItem {
   display: flex;
   justify-content: center;
@@ -452,44 +388,13 @@ aside {
   width: 100%;
   height: 100%;
   position: relative;
-  margin-top: 8rem;
 }
 .ListeTermineNav {
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 0;
-}
-
-.Nav-Main {
-  display: flex;
-}
-.Nav-Sort {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 0.5rem;
-  gap: 8rem;
-}
-.Btn-Sort {
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-
-  width: 5.3rem;
-
-
-}
-
-.Btn-Sort2 {
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-
-  width: 6rem;
-
-  gap: 4px;
 }
 
 .ListeTermine {
@@ -497,40 +402,44 @@ aside {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  margin-top: 6rem;
+
+  margin-top: 3rem;
 
   width: 100%;
 }
 
 .Termine {
-  font-size: 1.5rem;
-  border: 2px solid black;
-  border-radius: 9px;
+  font-size: 1rem;
+  border: 1.5px solid black;
+
+  display: flex;
+
+  padding: 0.5rem;
+  width: 100%;
+}
+.TermineC {
+  font-size: 1rem;
+  border: 1.5px solid black;
+  background-color: #d3f9d8;
   display: flex;
 
   gap: 0.3rem;
-  padding: 1rem;
+  padding: 0.5rem;
   width: 100%;
 }
-.ItemText {
-  width: 80%;
-  text-align: left;
-}
-.ItemBTNS {
+.ListeTagSotiren {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-left: auto;
 }
 .hidden {
   display: none;
 }
 
 button {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   padding: 0.3rem;
   border: 1px solid black;
   border-radius: 50%;
@@ -563,14 +472,7 @@ button {
   margin: 50% auto 0 auto;
 }
 
-.Ckeckt {
-  color: green;
-}
-.uncheck {
-  color: red;
-}
-
 ion-icon {
-  font-size: 5rem;
+  font-size: 1rem;
 }
 </style>
