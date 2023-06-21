@@ -16,6 +16,7 @@ export default {
     this.$nextTick(() => {
       this.SaveWoche()
       this.GetWoche()
+      window.scrollTo(0, 0)
     })
   },
 
