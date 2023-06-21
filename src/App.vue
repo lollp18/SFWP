@@ -16,7 +16,7 @@ export default {
     this.$nextTick(() => {
       this.SaveWoche()
       this.GetWoche()
-      window.scrollTo(0, 0)
+      scrollTop()
     })
   },
 
@@ -170,6 +170,11 @@ export default {
       } else {
         this.aside = true
       }
+    },
+
+    scrollTop() {
+      const container = this.$el.querySelector("#app")
+      container.scrollTop = container.scrollHeight
     },
   },
 }
