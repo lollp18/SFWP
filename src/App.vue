@@ -16,7 +16,6 @@ export default {
     this.$nextTick(() => {
       this.SaveWoche()
       this.GetWoche()
-      this.scrollTop()
     })
   },
 
@@ -26,7 +25,7 @@ export default {
     return {
       WochenDays: [
         "Montag",
-        "Dinstag",
+        "Dienstag",
         "Mittwoch",
         "Donnerstag",
         "Freitag",
@@ -98,14 +97,14 @@ export default {
       this.Tage.set(this.CurrentTag.Day, this.CurrentTag.Termine)
       console.log(this.CurrentTag.Day)
     },
-    TerminBearbeitenAufrufen(i) {
-      this.currentTermin = i
+    TerminBearbeitenAufrufen() {
       this.WochenTage = false
       this.Terminliste = false
       this.TerminBearbeiten = true
       this.TerminOptionen = false
 
-      this.TerminBearbeitenValue = this.CurrentTag.Termine[i].eintag
+      this.TerminBearbeitenValue =
+        this.CurrentTag.Termine[this.currentTermin].eintag
     },
     TerminBearbeitenV() {
       this.CurrentTag.Termine[this.currentTermin].eintag =
@@ -129,11 +128,12 @@ export default {
       this.Terminliste = false
       this.TagSotiren = true
     },
-    NavigatTerminOptionen() {
+    NavigatTerminOptionen(i) {
       if (this.TerminOptionen == true) {
         this.TerminOptionen = false
       } else {
         this.TerminOptionen = true
+        this.currentTermin = i
       }
     },
 
@@ -149,9 +149,9 @@ export default {
     getDimensions() {
       this.height = document.documentElement.clientHeight
     },
-    TerminLöschhen(i) {
+    TerminLöschhen() {
       this.TerminOptionen = false
-      this.CurrentTag.Termine.splice(i, 1)
+      this.CurrentTag.Termine.splice(this.currentTermin, 1)
       this.SaveWoche()
     },
     check(i) {
@@ -198,6 +198,15 @@ export default {
       {{ Tag }}
     </p>
   </div>
+  <!-- TerminOptionen  -->
+  <aside :class="TerminOptionen ? 'TerminOptionen' : 'hidden'">
+    <button @click="TerminLöschhen()">
+      <ion-icon name="trash"></ion-icon>
+    </button>
+    <button @click="TerminBearbeitenAufrufen()">
+      <ion-icon name="pencil"></ion-icon>
+    </button>
+  </aside>
 
   <div :class="Terminliste ? 'ListeTermineRapper' : 'hidden'">
     <!-- TerminListe Nav -->
@@ -222,21 +231,12 @@ export default {
         :class="Termin.activ ? 'TermineC' : 'Termine'"
         v-for="(Termin, i) in CurrentTag.Termine"
         :key="i">
-        <!-- TerminOptionen  -->
-        <aside :class="TerminOptionen ? 'TerminOptionen' : 'hidden'">
-          <button @click="TerminLöschhen(i)">
-            <ion-icon name="trash"></ion-icon>
-          </button>
-          <button @click="TerminBearbeitenAufrufen(i)">
-            <ion-icon name="pencil"></ion-icon>
-          </button>
-        </aside>
         <p
           style="margin-right: auto"
           @click="check(i)">
           {{ Termin.eintag }}
         </p>
-        <button @click="NavigatTerminOptionen">
+        <button @click="NavigatTerminOptionen(i)">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
