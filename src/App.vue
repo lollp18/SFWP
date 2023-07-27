@@ -34,7 +34,7 @@ export default {
 
       Tage: new Map([
         ["Montag", []],
-        ["Dinstag", []],
+        ["Dienstag", []],
         ["Mittwoch", []],
         ["Donnerstag", []],
         ["Freitag", []],
@@ -142,7 +142,8 @@ export default {
         eintag: "",
         activ: false,
       })
-      this.TerminBearbeitenAufrufen(this.CurrentTag.Termine.length - 1)
+      this.currentTermin = this.CurrentTag.Termine.length - 1
+      this.TerminBearbeitenAufrufen()
       this.SaveWoche()
     },
 
