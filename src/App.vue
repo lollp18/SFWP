@@ -10,16 +10,12 @@ export default {
     }
   },
 
-  mounted() {},
-
   updated() {
     this.$nextTick(() => {
       this.SaveWoche()
       this.GetWoche()
     })
   },
-
-  unmounted() {},
 
   data() {
     return {
@@ -40,30 +36,50 @@ export default {
         ["Freitag", []],
         ["Samstag", []],
       ]),
-      currentTermin: undefined,
+      CurrentTerminID: undefined,
+      CurrentTermin: {
+        StraßenName: "",
+        StraßenNummer: undefined,
+        Tätichkeit: "",
+      },
       CurrentTag: {
         Day: "Sonntag",
         Termine: Array(
           {
-            eintag: "",
+            eintrag: {
+              StraßenName: "",
+              StraßenNummer: undefined,
+              Tätichkeit: "",
+            },
             activ: false,
           },
           {
-            eintag: "",
+            eintrag: {
+              StraßenName: "",
+              StraßenNummer: undefined,
+              Tätichkeit: "",
+            },
             activ: false,
           },
           {
-            eintag: "",
+            eintrag: {
+              StraßenName: "",
+              StraßenNummer: undefined,
+              Tätichkeit: "",
+            },
             activ: false,
           },
           {
-            eintag: "",
+            eintrag: {
+              StraßenName: "",
+              StraßenNummer: undefined,
+              Tätichkeit: "",
+            },
             activ: false,
           }
         ),
       },
 
-      TerminBearbeitenValue: undefined,
       WochenTage: true,
       Terminliste: false,
       TerminBearbeiten: false,
@@ -74,12 +90,18 @@ export default {
   },
 
   methods: {
+    KopieTermin() {
+      const KopieTermin = this.CurrentTag.Termine[this.CurrentTerminID]
+      this.CurrentTag.Termine.push({ ...KopieTermin })
+      this.SaveWoche()
+    },
     SaveWoche() {
       this.SavDay()
       localStorage.setItem(
         "Woche",
         JSON.stringify(Array.from(this.Tage.entries()))
       )
+      this.GetWoche()
     },
     GetWoche() {
       this.Tage = new Map(JSON.parse(localStorage.getItem("Woche")))
@@ -95,20 +117,17 @@ export default {
     },
     SavDay() {
       this.Tage.set(this.CurrentTag.Day, this.CurrentTag.Termine)
-      console.log(this.CurrentTag.Day)
     },
     TerminBearbeitenAufrufen() {
       this.WochenTage = false
       this.Terminliste = false
       this.TerminBearbeiten = true
       this.TerminOptionen = false
-
-      this.TerminBearbeitenValue =
-        this.CurrentTag.Termine[this.currentTermin].eintag
+      this.aside = false
+      this.CurrentTermin = this.CurrentTag.Termine[this.CurrentTerminID].eintrag
     },
     TerminBearbeitenV() {
-      this.CurrentTag.Termine[this.currentTermin].eintag =
-        this.TerminBearbeitenValue
+      this.CurrentTag.Termine[this.CurrentTerminID].eintrag = this.CurrentTermin
       this.SaveWoche()
     },
     NavigatWoche() {
@@ -117,6 +136,13 @@ export default {
       this.TerminBearbeiten = false
     },
     NavigatTermine() {
+      if (
+        (!this.CurrentTermin.StraßenNummer ||
+          !this.CurrentTermin.StraßenName ||
+          !this.CurrentTermin.Tätichkeit) &&
+        this.TagSotiren == false
+      )
+        this.TerminLöschen()
       this.WochenTage = false
       this.TerminOptionen = false
       this.Terminliste = true
@@ -126,23 +152,25 @@ export default {
     NavigatTagSotiren() {
       this.TerminOptionen = false
       this.Terminliste = false
+      this.aside = false
       this.TagSotiren = true
     },
     NavigatTerminOptionen(i) {
-      if (this.TerminOptionen == true) {
-        this.TerminOptionen = false
-      } else {
-        this.TerminOptionen = true
-        this.currentTermin = i
-      }
+      this.TerminOptionen
+        ? (this.TerminOptionen = false)
+        : (this.TerminOptionen = true) && (this.CurrentTerminID = i)
     },
 
     AddTermin() {
       this.CurrentTag.Termine.push({
-        eintag: "",
+        eintrag: {
+          StraßenName: "",
+          StraßenNummer: undefined,
+          Tätichkeit: "",
+        },
         activ: false,
       })
-      this.currentTermin = this.CurrentTag.Termine.length - 1
+      this.CurrentTerminID = this.CurrentTag.Termine.length - 1
       this.TerminBearbeitenAufrufen()
       this.SaveWoche()
     },
@@ -150,27 +178,21 @@ export default {
     getDimensions() {
       this.height = document.documentElement.clientHeight
     },
-    TerminLöschhen() {
+    TerminLöschen() {
       this.TerminOptionen = false
-      this.CurrentTag.Termine.splice(this.currentTermin, 1)
+      this.CurrentTag.Termine.splice(this.CurrentTerminID, 1)
       this.SaveWoche()
     },
     check(i) {
-      if (this.CurrentTag.Termine[i].activ === true) {
-        this.CurrentTag.Termine[i].activ = false
-        this.SaveWoche()
-      } else {
-        this.CurrentTag.Termine[i].activ = true
-        this.SaveWoche()
-      }
+      this.CurrentTag.Termine[i].activ
+        ? (this.CurrentTag.Termine[i].activ = false)
+        : (this.CurrentTag.Termine[i].activ = true)
+
+      this.SaveWoche()
     },
 
     AsideNav() {
-      if (this.aside == true) {
-        this.aside = false
-      } else {
-        this.aside = true
-      }
+      this.aside ? (this.aside = false) : (this.aside = true)
     },
 
     scrollTop() {
@@ -185,9 +207,9 @@ export default {
   <aside :class="aside ? '' : 'hidden'">
     <div
       class="asideItem"
-      v-for="Ta in WochenDays"
-      @click="GetDay(Ta)">
-      <p class="Day">{{ Ta[0] + Ta[1] }}</p>
+      v-for="Tag in WochenDays"
+      @click="GetDay(Tag)">
+      <p class="Day">{{ Tag[0] + Tag[1] }}</p>
     </div>
   </aside>
 
@@ -200,14 +222,17 @@ export default {
     </p>
   </div>
   <!-- TerminOptionen  -->
-  <aside :class="TerminOptionen ? 'TerminOptionen' : 'hidden'">
-    <button @click="TerminLöschhen()">
+  <div :class="TerminOptionen ? 'TerminOptionen' : 'hidden'">
+    <button @click="TerminLöschen()">
       <ion-icon name="trash"></ion-icon>
     </button>
     <button @click="TerminBearbeitenAufrufen()">
       <ion-icon name="pencil"></ion-icon>
     </button>
-  </aside>
+    <button @click="KopieTermin()">
+      <ion-icon name="copy-outline"></ion-icon>
+    </button>
+  </div>
 
   <div :class="Terminliste ? 'ListeTermineRapper' : 'hidden'">
     <!-- TerminListe Nav -->
@@ -235,7 +260,13 @@ export default {
         <p
           style="margin-right: auto"
           @click="check(i)">
-          {{ Termin.eintag }}
+          {{
+            Termin.eintrag.StraßenName +
+            " Str " +
+            Termin.eintrag.StraßenNummer +
+            " " +
+            Termin.eintrag.Tätichkeit
+          }}
         </p>
         <button @click="NavigatTerminOptionen(i)">
           <svg
@@ -257,19 +288,25 @@ export default {
   <!-- Tag Sotiren -->
   <div :class="TagSotiren ? 'ListeTagSotiren' : 'hidden'">
     <nav class="NavTerminBearbeiten">
+      <p class="Day">Tag Sotiren</p>
       <button @click="NavigatTermine">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </button>
-      <p class="Day">Tag Sotiren</p>
     </nav>
     <draggable v-model="CurrentTag.Termine">
       <template
+        class="Termine"
         v-for="(Termin, i) in CurrentTag.Termine"
         :key="i"
-        #item="{ element: Termin }"
-        style="width: 100%">
+        #item="{ element: Termin }">
         <div class="Termine">
-          {{ Termin.eintag }}
+          {{
+            Termin.eintrag.StraßenName +
+            " Str " +
+            Termin.eintrag.StraßenNummer +
+            " " +
+            Termin.eintrag.Tätichkeit
+          }}
         </div>
       </template>
     </draggable>
@@ -279,15 +316,39 @@ export default {
 
   <div :class="TerminBearbeiten ? 'TerminBearbeiten' : 'hidden'">
     <nav class="NavTerminBearbeiten">
+      <p class="Day">Termin Bearbeiten</p>
       <button @click="NavigatTermine">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </button>
-      <p class="Day">Termin Bearbeiten</p>
     </nav>
     <input
+      placeholder="Str Name"
       @input="TerminBearbeitenV"
-      v-model="TerminBearbeitenValue"
+      style="width: 100%"
+      v-model="CurrentTermin.StraßenName"
       class="BearbeitenInput" />
+    <input
+      placeholder="Str Nr"
+      @input="TerminBearbeitenV"
+      style="width: 20%"
+      v-model="CurrentTermin.StraßenNummer"
+      class="BearbeitenInput" />
+    <select
+      @change="TerminBearbeitenV"
+      placeholder="Tätichkeit"
+      v-model="CurrentTermin.Tätichkeit"
+      style="width: 50%; font-size: 1.5rem">
+      <option
+        style="display: flex; justify-content: center; align-items: center"
+        value=""
+        disabled>
+        Tätichkeit
+      </option>
+      <option value="M">M</option>
+      <option value="F">F</option>
+      <option value="FSS">FSS</option>
+      <option value="ABN">ABN</option>
+    </select>
   </div>
 </template>
 
@@ -302,12 +363,12 @@ export default {
 }
 
 body {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   overflow-x: hidden;
   font-size: 16.5px;
-  color: var(--color-text);
-  background: var(--color-background);
+  color: #000;
+  background: #fff;
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -325,15 +386,15 @@ body {
   position: relative;
 }
 .ListeTage {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 .Tage {
-  width: 100%;
+  width: 100vw;
   height: 16.666%;
   font-size: 1.8rem;
   border-bottom: 2px solid black;
@@ -345,31 +406,39 @@ nav {
   padding: 0.5rem;
 
   font-size: 1rem;
-  width: 100%;
+  width: 100vw;
   background-color: #ffffff;
   border-bottom: solid black 1.5px;
 }
 aside {
+  position: fixed;
+  top: 88vh;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
   background-color: #fff;
-  border-right: solid black 1.5px;
+
   border-top: solid black 1.5px;
   color: #000;
-  height: 85%;
-  width: 25%;
+  height: 5%;
+  width: 100vw;
   position: fixed;
-  border-top-right-radius: 11px;
+
   z-index: 2;
 }
 .TerminOptionen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  position: fixed;
+  z-index: 2;
   height: 15%;
   width: 11%;
-  justify-content: center;
-  border-top-right-radius: 0;
+  border-top: solid black 1.5px;
   border-bottom: solid black 1.5px;
-  border-right: 0;
   border-left: solid black 1.5px;
   border-top-left-radius: 11px;
   border-bottom-left-radius: 11px;
@@ -382,9 +451,11 @@ aside {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 16.666%;
+  height: 100%;
   font-size: 1.5rem;
-  border-bottom: solid black 1.5px;
+
+  border-left: solid black 0.5px;
+  border-right: solid black 0.5px;
 }
 
 .Day {
@@ -392,14 +463,15 @@ aside {
 }
 
 .ListeTermineRapper {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vw;
   position: relative;
 }
 .ListeTermineNav {
+  border-top: 1px solid black;
   display: flex;
   position: fixed;
-  top: 0;
+  top: 93vh;
   left: 0;
   z-index: 0;
 }
@@ -409,10 +481,7 @@ aside {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  margin-top: 3rem;
-
-  width: 100%;
+  width: 100vw;
 }
 
 .Termine {
@@ -422,7 +491,7 @@ aside {
   display: flex;
 
   padding: 0.5rem;
-  width: 100%;
+  width: 100vw;
 }
 .TermineC {
   font-size: 1rem;
@@ -432,11 +501,11 @@ aside {
 
   gap: 0.3rem;
   padding: 0.5rem;
-  width: 100%;
+  width: 100vw;
 }
 .ListeTagSotiren {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -462,10 +531,12 @@ button {
 .TerminBearbeiten {
   display: flex;
   flex-direction: column;
+  color: #000;
+  align-items: center;
   gap: 1rem;
 
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 .NavTerminBearbeiten {
   display: flex;
@@ -474,9 +545,8 @@ button {
 .BearbeitenInput {
   padding: 0.5rem;
   font-size: 1.5rem;
-  height: 3rem;
-  width: 100%;
-  margin: 50% auto 0 auto;
+
+  height: 2rem;
 }
 
 ion-icon {
