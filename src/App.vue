@@ -124,10 +124,14 @@ export default {
       this.TerminBearbeiten = true
       this.TerminOptionen = false
       this.aside = false
-      this.CurrentTermin = this.CurrentTag.Termine[this.CurrentTerminID].eintrag
+      this.CurrentTermin = {
+        ...this.CurrentTag.Termine[this.CurrentTerminID].eintrag,
+      }
     },
     TerminBearbeitenV() {
-      this.CurrentTag.Termine[this.CurrentTerminID].eintrag = this.CurrentTermin
+      this.CurrentTag.Termine[this.CurrentTerminID].eintrag = {
+        ...this.CurrentTermin,
+      }
       this.SaveWoche()
     },
     NavigatWoche() {
