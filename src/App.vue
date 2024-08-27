@@ -1,5 +1,6 @@
 <script>
 import draggable from "vuedraggable"
+
 export default {
   components: {
     draggable,
@@ -107,6 +108,7 @@ export default {
       this.Tage = new Map(JSON.parse(localStorage.getItem("Woche")))
     },
     GetDay(Tag) {
+      this.SetFullscreen()
       this.WochenTage = false
       this.Terminliste = true
       this.aside = false
@@ -202,6 +204,9 @@ export default {
     scrollTop() {
       const container = this.$el.querySelector("#app")
       container.scrollTop = container.scrollHeight
+    },
+    SetFullscreen() {
+      document.documentElement.requestFullscreen()
     },
   },
 }

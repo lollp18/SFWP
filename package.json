@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "@vueuse/core": "^11.0.3",
     "quasar": "^2.12.0",
     "vue": "^3.3.2",
     "vue-touch-events": "^1.0.3",
