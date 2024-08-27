@@ -11,7 +11,10 @@ export default {
     }
   },
   mounted() {
-    window.scrollBy(0, 5)
+    window.scrollTo({
+      top: document.body.scrollHeight, // Scroll to the bottom
+      behavior: "smooth", // Smooth scrolling
+    })
   },
 
   updated() {
