@@ -10,9 +10,7 @@ export default {
       this.GetWoche()
     }
   },
-  mounted() {
-  
-  },
+
 
   updated() {
     this.$nextTick(() => {
