@@ -10,6 +10,9 @@ export default {
       this.GetWoche()
     }
   },
+  mounted() {
+   
+  },
 
   updated() {
     this.$nextTick(() => {
@@ -202,7 +205,7 @@ export default {
     },
 
     scrollTop() {
-      const container = this.$el.querySelector("#app")
+      const container = document.querySelector("app")
       container.scrollTop = container.scrollHeight
     },
     SetFullscreen() {
