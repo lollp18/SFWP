@@ -11,7 +11,7 @@ export default {
     }
   },
   mounted() {
-   
+    window.scrollBy(0, 5)
   },
 
   updated() {
