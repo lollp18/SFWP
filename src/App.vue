@@ -11,10 +11,7 @@ export default {
     }
   },
   mounted() {
-    window.scrollTo({
-      top: document.body.scrollHeight, // Scroll to the bottom
-      behavior: "smooth", // Smooth scrolling
-    })
+  
   },
 
   updated() {
